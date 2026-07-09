@@ -549,19 +549,34 @@
   }
   .led-hero {
     width: 100%;
-    height: 360px;
+    height: 440px;
     background-image: url('assets/images/fd-hero-crowd.jpg');
     background-size: cover;
     background-position: center 35%;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 75%, transparent 100%);
-    mask-image: linear-gradient(180deg, transparent 0%, black 15%, black 75%, transparent 100%);
     position: relative;
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .led-hero--arena {
+    background-image: url('assets/images/fd-arena-crowd.jpg');
+    background-position: center 30%;
+  }
+  .led-hero::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 90px;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.85) 100%);
+    pointer-events: none;
   }
   .led-hero-cap {
     position: absolute;
-    bottom: 40px;
+    bottom: 16px;
     left: 0;
     right: 0;
+    z-index: 1;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
@@ -573,89 +588,134 @@
   .led-hero-cap .pulse {
     color: var(--pfl-red);
   }
-  /* === Product Row: two side-by-side panels (band on its own + on-wrist) === */
-  .led-product-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 24px;
+
+  /* === WATCH IN ACTION button between the two panels === */
+  .led-watch-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 28px 0;
   }
-  .led-product-band,
-  .led-product-wrist {
-    position: relative;
-    background: linear-gradient(135deg, rgba(5,35,131,0.12) 0%, rgba(5,35,131,0.04) 100%);
-    border: 1px solid var(--line);
+  .led-watch-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 36px;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    background: linear-gradient(135deg, #1a6dff 0%, #052383 100%);
+    border: 1px solid #3aa0ff;
     border-radius: 4px;
-    overflow: hidden;
-    aspect-ratio: 4/3;
+    cursor: pointer;
+    animation: watchFlash 1.6s ease-in-out infinite;
+    transition: transform 0.15s ease;
   }
-  .led-product-band {
-    /* Glow effect behind the transparent wristband */
-    background:
-      radial-gradient(ellipse 60% 50% at center, rgba(58,160,255,0.25) 0%, transparent 70%),
-      linear-gradient(135deg, rgba(5,35,131,0.18) 0%, rgba(10,11,20,0.4) 100%);
+  .led-watch-btn:hover { transform: scale(1.05); animation-play-state: paused; box-shadow: 0 0 40px rgba(58,160,255,0.9); }
+  .led-watch-btn .play-ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.5);
+    flex-shrink: 0;
+  }
+  .led-watch-btn .play-ico svg { margin-left: 2px; }
+  @keyframes watchFlash {
+    0%, 100% { box-shadow: 0 0 12px rgba(58,160,255,0.35); border-color: #2a5bbf; }
+    50% { box-shadow: 0 0 42px rgba(58,160,255,0.95), 0 0 80px rgba(58,160,255,0.35); border-color: #7cc3ff; }
+  }
+
+  /* === VIDEO MODAL === */
+  .led-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(4,5,12,0.88);
+    backdrop-filter: blur(4px);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .led-modal-overlay.open { display: flex; }
+  .led-modal {
+    width: min(1060px, 100%);
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #0d0f1a;
+    border: 1px solid var(--line-2);
+    border-top: 4px solid var(--pfl-red);
+    border-radius: 8px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.8);
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(16px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .led-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .led-modal-title {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .led-modal-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--pfl-red);
+    border: none;
+    color: var(--white);
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: background 0.15s ease, transform 0.15s ease;
   }
-  .led-product-band img {
-    max-width: 88%;
-    max-height: 78%;
-    object-fit: contain;
-    filter: drop-shadow(0 0 30px rgba(58,160,255,0.4));
-  }
-  .led-product-wrist-img {
-    position: absolute;
-    inset: 0;
-    background-image: url('assets/images/fd-product-wrist.jpg');
-    background-size: cover;
-    background-position: center;
-  }
-  .led-product-cap {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px 18px 12px;
-    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.85) 100%);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.22em;
-    color: var(--bone);
-    pointer-events: none;
-  }
-
-  /* Full-width stat strip below the product row */
-  .led-stat-strip {
+  .led-modal-close:hover { background: var(--pfl-red-dark); transform: scale(1.08); }
+  .led-modal-body {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 24px;
-    margin-top: 24px;
-    padding: 24px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--pfl-red);
+    padding: 24px 28px 28px;
   }
-  .led-stat {
-    border-left: 2px solid var(--pfl-red);
-    padding-left: 12px;
-  }
-  .led-stat-num {
-    font-family: 'Oswald', sans-serif;
-    font-weight: 700;
-    font-size: 30px;
-    color: var(--pfl-red);
-    line-height: 1;
-  }
-  .led-stat-label {
+  .led-modal-vtag {
+    display: inline-block;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--pfl-grey-light);
-    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pfl-red);
+    border: 1px solid var(--pfl-red);
+    border-radius: 3px;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
+  }
+  .led-modal-body video {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    background: #000;
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    display: block;
   }
 
   /* === COMMERCIAL === */
@@ -837,11 +897,9 @@
     .activation-body { padding: 0 16px 24px 72px; }
     .activation-body p, .activation-body li { font-size: 14px; }
 
-    .led-hero { height: 240px; }
-    .led-product-row { grid-template-columns: 1fr; gap: 14px; }
-    .led-product-band, .led-product-wrist { aspect-ratio: 4/3; }
-    .led-stat-strip { grid-template-columns: repeat(2, 1fr); gap: 18px; padding: 20px; }
-    .led-stat-num { font-size: 24px; }
+    .led-hero { height: 260px; }
+    .led-watch-btn { padding: 14px 24px; font-size: 14px; }
+    .led-modal-body { grid-template-columns: 1fr; }
 
     .fin-block { grid-template-columns: 1fr; }
     .fin-fee { padding: 36px 24px; }
@@ -868,7 +926,6 @@
     .activation-title { font-size: 16px; }
     .activation-body { padding: 0 14px 20px 58px; }
     .led-hero { height: 200px; }
-    .led-stat-strip { padding: 16px; gap: 14px; }
     .fin-fee-amount { font-size: 42px; }
     .btn-pdf-hero { width: 100%; justify-content: center; padding: 14px 20px; }
     .hero-cta { flex-direction: column; align-items: stretch; }
@@ -972,37 +1029,22 @@
 
         <div class="led-showcase">
           <div class="led-hero">
-            <div class="led-hero-cap"><span class="pulse">●</span>  IN-ARENA · FAN-WORN MOMENT</div>
+            <div class="led-hero-cap"><span class="pulse">●</span>  ON WRIST</div>
           </div>
 
-          <div class="led-product-row">
-            <div class="led-product-band">
-              <img src="assets/images/fd-product-band.png" alt="FanDuel LED wristband product" />
-              <div class="led-product-cap">Product · Lit Up</div>
-            </div>
-            <div class="led-product-wrist">
-              <div class="led-product-wrist-img"></div>
-              <div class="led-product-cap">On-Wrist · In Hand</div>
-            </div>
+          <div class="led-watch-wrap">
+            <button class="led-watch-btn" type="button" onclick="openLedModal()">
+              <span class="play-ico">
+                <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0L12 7L0 14V0Z" fill="#ffffff"/>
+                </svg>
+              </span>
+              Watch in Action
+            </button>
           </div>
 
-          <div class="led-stat-strip">
-            <div class="led-stat">
-              <div class="led-stat-num">100%</div>
-              <div class="led-stat-label">Attendees</div>
-            </div>
-            <div class="led-stat">
-              <div class="led-stat-num">3×</div>
-              <div class="led-stat-label">Winners / event</div>
-            </div>
-            <div class="led-stat">
-              <div class="led-stat-num">TV</div>
-              <div class="led-stat-label">Broadcast cut-ins</div>
-            </div>
-            <div class="led-stat">
-              <div class="led-stat-num">RGB</div>
-              <div class="led-stat-label">FOH-addressable</div>
-            </div>
+          <div class="led-hero led-hero--arena">
+            <div class="led-hero-cap"><span class="pulse">●</span>  IN-ARENA · CROWD LIT</div>
           </div>
         </div>
       </div>
@@ -1017,7 +1059,42 @@
   </div>
 </footer>
 
+<!-- LED Activation video modal -->
+<div class="led-modal-overlay" id="ledModal" onclick="if(event.target===this) closeLedModal()">
+  <div class="led-modal" role="dialog" aria-modal="true" aria-labelledby="ledModalTitle">
+    <div class="led-modal-head">
+      <div class="led-modal-title" id="ledModalTitle">PFL Lyon LED Activation</div>
+      <button class="led-modal-close" type="button" aria-label="Close" onclick="closeLedModal()">✕</button>
+    </div>
+    <div class="led-modal-body">
+      <div>
+        <span class="led-modal-vtag">V1</span>
+        <video controls preload="metadata" src="assets/video/v1.mp4"></video>
+      </div>
+      <div>
+        <span class="led-modal-vtag">V2</span>
+        <video controls preload="metadata" src="assets/video/v2.mp4"></video>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+  // LED activation video modal
+  function openLedModal() {
+    document.getElementById('ledModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLedModal() {
+    const m = document.getElementById('ledModal');
+    m.classList.remove('open');
+    m.querySelectorAll('video').forEach(v => v.pause());
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLedModal();
+  });
+
   // Scroll-reveal on event cards
   const cards = document.querySelectorAll('.event-card');
   const io = new IntersectionObserver((entries) => {
